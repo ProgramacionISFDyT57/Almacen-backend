@@ -13,7 +13,24 @@ let nombrecoleccion = "Productos";
 app.get('/',async (req:Request, res:Response)=>{
     res.status(200).send('Funcionando almacen-backend');
 })
-app.post('/producto', async (req: Request, res: Response) => {
+app.post('/producto', crear);
+
+app.get('/listar', async(req:Request, res:Response)=>{
+    const db = conexión.db(nombredb);
+    const productos = db.collection(nombrecoleccion);
+    console.log(req.query);
+        try {
+            const arregloproductos = await productos.find(req.query).toArray();
+            console.log(arregloproductos);
+            res.json(arregloproductos);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: err });
+        }
+        
+})
+
+async function crear(req: Request, res: Response) {
     if (req.body.nombre && req.body.cantidad && req.body.marca&& req.body.precio && req.body.codigo_de_barras) {
         const producto1: Producto = {
             nombre: req.body.nombre,
@@ -38,29 +55,7 @@ app.post('/producto', async (req: Request, res: Response) => {
         res.status(400).send("Falta una de las propiedades del producto");
     }
 
-})
-
-
-
-
-
-
-app.get('/listar', async(req:Request, res:Response)=>{
-    const db = conexión.db(nombredb);
-    const productos = db.collection(nombrecoleccion);
-    console.log(req.query);
-        try {
-            const arregloproductos = await productos.find(req.query).toArray();
-            console.log(arregloproductos);
-            res.json(arregloproductos);
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ error: err });
-        }
-        
-})
-
-
+}
 
 
 
