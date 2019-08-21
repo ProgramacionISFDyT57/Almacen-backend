@@ -13,10 +13,10 @@ let nombrecoleccion = "Productos";
 app.get('/',async (req:Request, res:Response)=>{
     res.status(200).send('Funcionando almacen-backend');
 })
-app.post('/producto', crear);
-app.get('/listar', listar);
-app.delete('/borrar/:_id', borrar);
-app.get('/buscar', buscar);
+app.post('/producto/crear', crear);
+app.get('/producto/listar', listar);
+app.delete('/producto/borrar/:_id', borrar);
+app.get('/producto/buscar', buscar);
 
 async function listar(req:Request, res:Response){
     const db = conexión.db(nombredb);
