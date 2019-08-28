@@ -19,7 +19,7 @@ app.post('/producto/crear', productoController.Crear);
 app.get('/producto/listar', productoController.Listar);
 app.delete('/producto/borrar/:_id', productoController.Borrar);
 app.get('/producto/buscar', productoController.Buscar);
-
+app.put('/producto/modificar/:_id',productoController.Modificar);
 
 
 
