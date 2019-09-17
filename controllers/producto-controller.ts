@@ -1,7 +1,7 @@
 import { Producto } from '../models/producto';
 import { MongoClient, ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
-import { RSA_X931_PADDING } from 'constants';
+
 
 export class ProductoController {
     private nombredb: string;

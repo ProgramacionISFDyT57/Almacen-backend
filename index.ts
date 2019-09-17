@@ -6,6 +6,7 @@ const conexión = new MongoClient('mongodb://localhost:27017', { useNewUrlParser
 import * as express from 'express';
 import { Request, Response } from 'express';
 import { Resolver } from 'dns';
+import { VentaController } from './controllers/venta-controller';
 const app = express();
 app.use(bodyparser.json());
 const port = 3000;
@@ -20,6 +21,13 @@ app.get('/producto/listar', productoController.Listar);
 app.delete('/producto/borrar/:_id', productoController.Borrar);
 app.get('/producto/buscar', productoController.Buscar);
 app.put('/producto/modificar/:_id',productoController.Modificar);
+
+
+
+const ventaController=new VentaController(conexión,nombredb);
+app.post('/venta/crear',ventaController.Crear);
+app.put('/venta/insertar_producto/:_id', ventaController.InsertarProductos);
+app.get('/venta/listar',ventaController.ListarVentas);
 
 
 
