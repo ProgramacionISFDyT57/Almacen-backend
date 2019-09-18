@@ -14,11 +14,13 @@ export class VentaController {
         this.nombredb = nombredb;
         this.Crear = this.Crear.bind(this);
         this.InsertarProductos = this.InsertarProductos.bind(this);
-        this.ListarVentas=this.ListarVentas.bind(this);
+        this.ListarVentas = this.ListarVentas.bind(this);
+        this.SacarMonto=this.SacarMonto.bind(this);
     }
     public async Crear(req: Request, res: Response) {
         const venta1: Venta = {
             fecha: new Date().toISOString(),
+            ventafinalizada: false
         }
         const db = this.conexión.db(this.nombredb);
         const ventas = db.collection(this.nombrecoleccion2);
@@ -40,10 +42,10 @@ export class VentaController {
         const productos = db.collection(this.nombrecoleccion);
         const ventas = db.collection(this.nombrecoleccion2);
         if (req.body._id && req.body.cantidad) {
-            try{
-                const idprueba=new ObjectId(req.params._id);
-                const idprueba2=new ObjectId(req.body._id);
-            }catch{
+            try {
+                const idprueba = new ObjectId(req.params._id);
+                const idprueba2 = new ObjectId(req.body._id);
+            } catch{
                 res.status(400).send("El id del producto o de la venta están mal formados");
                 return;
             }
@@ -57,6 +59,10 @@ export class VentaController {
                 if (venta) {
                     const _idproducto = new ObjectId(req.body._id);
                     const producto: Producto = await productos.findOne({ _id: _idproducto });
+                    if (venta.ventafinalizada) {
+                        res.status(404).send("La venta ha sido finalizada");
+                        return;
+                    }
                     if (producto) {
                         if (productoporventa.cantidad <= producto.cantidad) {
                             const productomodificado = await productos.updateOne({ _id: _idproducto },
@@ -67,7 +73,7 @@ export class VentaController {
                             venta.productos_venta.push(productoporventa);
                             const ventamodificada = await ventas.updateOne({ _id: id },
                                 { $set: { productos_venta: venta.productos_venta } })
-                                res.send("Se ha agregado el objeto a la venta");
+                            res.send("Se ha agregado el objeto a la venta");
                         } else {
                             res.status(404).send("No hay la cantidad necesaria que se desea comprar");
                         }
@@ -104,8 +110,37 @@ export class VentaController {
             console.error(err);
             res.status(500).json({ error: err });
         }
-    }    
-}
+    }
+    public async SacarMonto(req: Request, res: Response) {
+        const db = this.conexión.db(this.nombredb);
+        const productos = db.collection(this.nombrecoleccion);
+        const ventas = db.collection(this.nombrecoleccion2);
+        let montototal = 0;
+        try {
+            const id = new ObjectId(req.params._id);
+            const venta: Venta = await ventas.findOne({ _id: id });
+            if (venta) {
+                const _idproducto = new ObjectId(req.body._id);
+                const producto: Producto = await productos.findOne({ _id: _idproducto });
+                if (venta.ventafinalizada) {
+                    res.status(404).send("La venta ha sido finalizada");
+                    return;
+                }
+                for (const productodeventa of venta.productos_venta) {
+                    const _idproducto = new ObjectId(productodeventa.id);
+                    const producto: Producto = await productos.findOne({ _id: _idproducto });
+                    montototal =montototal + productodeventa.cantidad * producto.precio    
+                }
+                const ventamodificada = await ventas.updateOne({ _id: id },
+                    { $set: { ventafinalizada: true, monto_total:montototal } })
+                    res.send("Venta modificada y finalizada " + "Monto total= "+ montototal);
 
+            }
 
+        }catch (err) {
+            console.error(err);
+            res.status(500).json({ error: err });
+        }
 
+    }
+    }

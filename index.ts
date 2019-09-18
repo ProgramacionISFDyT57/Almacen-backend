@@ -28,6 +28,7 @@ const ventaController=new VentaController(conexión,nombredb);
 app.post('/venta/crear',ventaController.Crear);
 app.put('/venta/insertar_producto/:_id', ventaController.InsertarProductos);
 app.get('/venta/listar',ventaController.ListarVentas);
+app.put('/venta/sacarmonto/:_id',ventaController.SacarMonto);
 
 
 
