@@ -24,11 +24,13 @@ app.put('/producto/modificar/:_id',productoController.Modificar);
 
 
 
+
 const ventaController=new VentaController(conexión,nombredb);
 app.post('/venta/crear',ventaController.Crear);
 app.put('/venta/insertar_producto/:_id', ventaController.InsertarProductos);
 app.get('/venta/listar',ventaController.ListarVentas);
 app.put('/venta/sacarmonto/:_id',ventaController.SacarMonto);
+app.delete('/venta/borrar',ventaController.BorrarVenta);
 
 
 
