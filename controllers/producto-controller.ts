@@ -1,12 +1,13 @@
 import { Producto } from '../models/producto';
 import { MongoClient, ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
-
+import {ProductoService} from '../services/producto-service';
 
 export class ProductoController {
     private nombredb: string;
     private nombrecoleccion = "Productos";
     private conexión: MongoClient;
+    private productoservice: ProductoService;
     constructor(conexion: MongoClient, nombredb: string, ) {
         this.conexión = conexion;
         this.nombredb = nombredb;
@@ -15,6 +16,7 @@ export class ProductoController {
         this.Buscar = this.Buscar.bind(this);
         this.Borrar = this.Borrar.bind(this);
         this.Modificar = this.Modificar.bind(this);
+        this.productoservice = new ProductoService(conexion.db(nombredb));
     }
     public async Listar(req: Request, res: Response) {
         const db = this.conexión.db(this.nombredb);
@@ -40,10 +42,8 @@ export class ProductoController {
                 precio: req.body.precio,
                 codigo_de_barras: req.body.codigo_de_barras
             }
-            const db = this.conexión.db(this.nombredb);
-            const productos = db.collection(this.nombrecoleccion);
             try {
-                await productos.insertOne(producto1);
+                await this.productoservice.CrearProducto(producto1);
                 console.log("Producto agregado");
                 res.send("Producto agregado a la base de datos");
 
