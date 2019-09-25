@@ -1,3 +1,8 @@
+import { ProductoCompra } from "./producto_compra";
+
 export interface Compra{
-    fecha:number;
+    fecha:string;
+    monto_total?: number;
+    productos_compra?: ProductoCompra[];
+    comprafinalizada: boolean;
 }

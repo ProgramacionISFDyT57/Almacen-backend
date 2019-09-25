@@ -7,6 +7,7 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 import { Resolver } from 'dns';
 import { VentaController } from './controllers/venta-controller';
+import { CompraController } from './controllers/compra-controller';
 const app = express();
 app.use(bodyparser.json());
 const port = 3000;
@@ -31,6 +32,8 @@ app.put('/venta/insertar_producto/:_id', ventaController.InsertarProductos);
 app.get('/venta/listar',ventaController.ListarVentas);
 app.put('/venta/sacarmonto/:_id',ventaController.SacarMonto);
 app.delete('/venta/borrar',ventaController.BorrarVenta);
+
+const compraController= new CompraController (conexión,nombredb);
 
 
 
