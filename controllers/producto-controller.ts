@@ -19,11 +19,9 @@ export class ProductoController {
         this.productoservice = new ProductoService(conexion.db(nombredb));
     }
     public async Listar(req: Request, res: Response) {
-        const db = this.conexión.db(this.nombredb);
-        const productos = db.collection(this.nombrecoleccion);
         console.log(req.query);
         try {
-            const arregloproductos = await productos.find(req.query).toArray();
+            const arregloproductos= await this.productoservice.ListarProducto();
             console.log(arregloproductos);
             res.json(arregloproductos);
         } catch (err) {
