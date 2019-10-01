@@ -57,25 +57,23 @@ export class ProductoController {
     }
 
     public async  Borrar(req: Request, res: Response) {
-        const db = this.conexión.db(this.nombredb);
-        const productos = db.collection(this.nombrecoleccion);
         try {
-            const id = new ObjectId(req.params._id);
-            const del = await productos.deleteOne({ _id: id });
-            console.log("Se borraron " + del.result.n);
+            const resultado=  await this.productoservice.BorrarProducto(req.params._id);
+            if(resultado){
             res.send("Se borro correctamente");
             console.log("Se borro correctamente el producto");
+            }else{
+                res.status(404).send('No se encontró el producto');
+            }
+            
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
         }
     }
     public async Buscar(req: Request, res: Response) {
-        const db = this.conexión.db(this.nombredb);
-        const productos = db.collection(this.nombrecoleccion);
-        console.log(req.query);
         try {
-            const arregloproductos = await productos.find(req.query).toArray();
+            const arregloproductos = await this.productoservice.BuscarProductos(req.query);
             console.log(arregloproductos);
             res.json(arregloproductos);
         } catch (err) {
@@ -85,8 +83,6 @@ export class ProductoController {
 
     }
     public async Modificar(req: Request, res: Response) {
-        const db = this.conexión.db(this.nombredb);
-        const productos = db.collection(this.nombrecoleccion);
         if (req.body.nombre || req.body.cantidad || req.body.marca || req.body.precio || req.body.codigo_de_barras) {
             try {
                 const p1: any = {}
@@ -105,12 +101,13 @@ export class ProductoController {
                 if(req.body.codigo_de_barras){
                     p1.codigo_de_barras = req.body.codigo_de_barras;
                 }
-                const id = new ObjectId(req.params._id);
-                const resultadomodificado = await productos.updateOne({ _id: id },
-                    { $set: p1 })
-                console.log("Se modificó correctamente el producto");
-                res.send("Se modificó correctamente el producto");
-                console.log("Se modificaron " + resultadomodificado.result.n + " propiedad/des");
+                const resultadomodificado = await this.productoservice.ModificarProducto(req.params._id, p1);
+                if(resultadomodificado){
+                    console.log("Se modificó correctamente el producto");
+                    res.send("Se modificó correctamente el producto");
+                }else{
+                    res.status(404).send('No se pudo modificar el producto');
+                }
             } catch (err) {
                 console.error(err);
                 res.status(500).json({ error: err });

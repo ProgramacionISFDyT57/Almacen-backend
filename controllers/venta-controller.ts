@@ -5,11 +5,15 @@ import { Producto } from '../models/producto';
 import { MongoClient, ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
 import { request } from 'https';
+import { VentaService } from '../services/venta-service';
+import {ProductoService} from '../services/producto-service';
 export class VentaController {
     private nombredb: string;
     private nombrecoleccion = "Productos";
     private nombrecoleccion2 = "Ventas";
     private conexión: MongoClient;
+    private productoservice: ProductoService;
+    private ventaservice: VentaService;
     constructor(conexion: MongoClient, nombredb: string, ) {
         this.conexión = conexion;
         this.nombredb = nombredb;
@@ -18,26 +22,20 @@ export class VentaController {
         this.ListarVentas = this.ListarVentas.bind(this);
         this.SacarMonto = this.SacarMonto.bind(this);
         this.BorrarVenta=this.BorrarVenta.bind(this);
+        this.productoservice = new ProductoService(conexion.db(nombredb));
+        this.ventaservice= new VentaService(conexion.db(nombredb));
     }
     public async Crear(req: Request, res: Response) {
         const venta1: Venta = {
             fecha: new Date().toISOString(),
             ventafinalizada: false
         }
-        const db = this.conexión.db(this.nombredb);
-        const ventas = db.collection(this.nombrecoleccion2);
-
-
-
         try {
-
-
-
-            const ventaNueva = await ventas.insertOne(venta1);
+            const venta= await this.ventaservice.CrearVenta(venta1);
             console.log("Venta agregada");
             res.json({
                 mensaje: "Venta agregada a la base de datos",
-                id: ventaNueva.insertedId.toHexString(),
+                id: venta,
             });
         } catch (err) {
             console.error(err);
@@ -45,9 +43,6 @@ export class VentaController {
         }
     }
     public async InsertarProductos(req: Request, res: Response) {
-        const db = this.conexión.db(this.nombredb);
-        const productos = db.collection(this.nombrecoleccion);
-        const ventas = db.collection(this.nombrecoleccion2);
         if (req.body._id && req.body.cantidad) {
             try {
                 const idprueba = new ObjectId(req.params._id);
@@ -62,7 +57,7 @@ export class VentaController {
                     cantidad: req.body.cantidad
                 }
                 const id = new ObjectId(req.params._id);
-                const venta: Venta = await ventas.findOne({ _id: id });
+                const venta: Venta =await this.ventaservice.
                 if (venta) {
                     const _idproducto = new ObjectId(req.body._id);
                     const producto: Producto = await productos.findOne({ _id: _idproducto });
@@ -91,22 +86,13 @@ export class VentaController {
                 } else {
                     res.status(404).send("No se ha creado la venta");
                 }
-
-
-
-
-
-
             } catch (err) {
                 console.error(JSON.stringify(err));
                 res.status(500).json(err);
             }
-
-
         } else {
             res.status(404).send("No se obtuvieron las propiedades necesarias");
         }
-
     }
     public async ListarVentas(req: Request, res: Response) {
         const db = this.conexión.db(this.nombredb);
@@ -115,7 +101,6 @@ export class VentaController {
         try {
             const ventasdto: VentaDto[] = [];
             const arregloventas = await ventas.find({ ventafinalizada: true }).toArray();
-
             for (const venta of arregloventas) {
 
                 const ventanueva: VentaDto = {
@@ -138,14 +123,11 @@ export class VentaController {
                         }
                         ventanueva.productos_venta.push(mostrarprod);
                     }
-
                 }
                 ventasdto.push(ventanueva);
             }
             console.log(ventasdto);
             res.json(ventasdto);
-
-
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: err });
@@ -174,14 +156,11 @@ export class VentaController {
                 const ventamodificada = await ventas.updateOne({ _id: id },
                     { $set: { ventafinalizada: true, monto_total: montototal } })
                 res.send("Venta modificada y finalizada " + "Monto total= " + montototal);
-
             }
-
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: err });
         }
-
     }
     public async BorrarVenta (req: Request, res: Response) {
         const db = this.conexión.db(this.nombredb);
@@ -191,7 +170,6 @@ export class VentaController {
             console.log("Se borro correctamente la venta");
             console.log("Se borraron " + del.result.n);
             res.send("Se borro correctamente " + del.result.n + " venta/s");
-            
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
