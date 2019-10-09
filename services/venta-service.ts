@@ -17,11 +17,50 @@ export class VentaService {
             }
         });
     }
-    public InsertarProducto(_idventa:string, cantidad:number,): Promise<void> {
+    public ModificarVenta(_idventa: string, productos: ProductoVenta[]): Promise<void> {
         return new Promise(async (resolve, reject) => {
-                try{
-                    const venta= await this.ventas.findOne({id:_idventa});
-                }
+            try {
+                const id = new ObjectId(_idventa);
+                const ventamodificada = await this.ventas.updateOne({ _id: id },
+                    { $set: { productos_venta: productos } })
+                resolve();
+
+
+            } catch (err) {
+                reject(err);
+            }
         });
     }
+    public BuscarVenta(parametro: string): Promise<Venta> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const id = new ObjectId(parametro);
+                const venta = await this.ventas.findOne({ _id: id });
+                resolve(venta);
+            } catch (err) {
+                reject(err);
+            }
+        })
+    } public FinalizarVenta(_idventa: string, monto: number): Promise<void> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const id = new ObjectId(_idventa);
+                const ventamodificada = await this.ventas.updateOne({ _id: id },
+                    { $set: { ventafinalizada: true, monto_total: monto } })
+                resolve();
+            } catch (err) {
+                reject(err);
+            }
+        })
+    }public BorrarVentas():Promise<number>{
+        return new Promise(async(resolve,reject)=>{
+            try{
+                const ventasborradas=await this.ventas.deleteMany({ventafinalizada:false});
+                resolve(ventasborradas.result.n);
+            }catch(err){
+                reject(err);
+            }
+        })
+    }
+    
 }

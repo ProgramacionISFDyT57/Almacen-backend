@@ -56,25 +56,22 @@ export class VentaController {
                     id: req.body._id,
                     cantidad: req.body.cantidad
                 }
-                const id = new ObjectId(req.params._id);
-                const venta: Venta =await this.ventaservice.
+                const venta: Venta =await this.ventaservice.BuscarVenta(req.params._id);
                 if (venta) {
-                    const _idproducto = new ObjectId(req.body._id);
-                    const producto: Producto = await productos.findOne({ _id: _idproducto });
+                    const producto: Producto = await this.productoservice.BuscarProductoPorId(req.body._id);
                     if (venta.ventafinalizada) {
                         res.status(404).send("La venta ha sido finalizada");
                         return;
                     }
                     if (producto) {
                         if (productoporventa.cantidad <= producto.cantidad) {
-                            const productomodificado = await productos.updateOne({ _id: _idproducto },
-                                { $set: { cantidad: producto.cantidad - productoporventa.cantidad } })
+                            const productomodificado = await this.productoservice.ModificarProducto(req.body._id,{cantidad:producto.cantidad-productoporventa.cantidad});
                             if (!venta.productos_venta) {
                                 venta.productos_venta = []
                             }
                             venta.productos_venta.push(productoporventa);
-                            const ventamodificada = await ventas.updateOne({ _id: id },
-                                { $set: { productos_venta: venta.productos_venta } })
+                            const ventamodificada = await this.ventaservice.ModificarVenta(req.params._id,venta.productos_venta)
+                        
                             res.send("Se ha agregado el objeto a la venta");
                         } else {
                             res.status(404).send("No hay la cantidad necesaria que se desea comprar");
@@ -134,27 +131,19 @@ export class VentaController {
         }
     }
     public async SacarMonto(req: Request, res: Response) {
-        const db = this.conexión.db(this.nombredb);
-        const productos = db.collection(this.nombrecoleccion);
-        const ventas = db.collection(this.nombrecoleccion2);
         let montototal = 0;
         try {
-            const id = new ObjectId(req.params._id);
-            const venta: Venta = await ventas.findOne({ _id: id });
+            const venta:Venta= await this.ventaservice.BuscarVenta(req.params._id);
             if (venta) {
-                const _idproducto = new ObjectId(req.body._id);
-                const producto: Producto = await productos.findOne({ _id: _idproducto });
                 if (venta.ventafinalizada) {
                     res.status(400).send("La venta ha sido finalizada");
                     return;
                 }
                 for (const productodeventa of venta.productos_venta) {
-                    const _idproducto = new ObjectId(productodeventa.id);
-                    const producto: Producto = await productos.findOne({ _id: _idproducto });
+                    const producto: Producto = await this.productoservice.BuscarProductoPorId(productodeventa.id);
                     montototal = montototal + productodeventa.cantidad * producto.precio
                 }
-                const ventamodificada = await ventas.updateOne({ _id: id },
-                    { $set: { ventafinalizada: true, monto_total: montototal } })
+                const ventamodificada = await this.ventaservice.FinalizarVenta(req.params._id,montototal);
                 res.send("Venta modificada y finalizada " + "Monto total= " + montototal);
             }
         } catch (err) {
@@ -163,16 +152,24 @@ export class VentaController {
         }
     }
     public async BorrarVenta (req: Request, res: Response) {
-        const db = this.conexión.db(this.nombredb);
-        const ventas = db.collection(this.nombrecoleccion2);
         try {
-            const del = await ventas.deleteMany({ ventafinalizada:false });
+            const del = await this.ventaservice.BorrarVentas();
             console.log("Se borro correctamente la venta");
-            console.log("Se borraron " + del.result.n);
-            res.send("Se borro correctamente " + del.result.n + " venta/s");
+            console.log("Se borraron " + del);
+            res.send("Se borro correctamente " + del + " venta/s");
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
+        }
+    }
+    public async BuscarVenta (req:Request, res:Response){
+        try{
+            const resultado= await this.ventaservice.BuscarVenta(req.params.id);
+            console.log(resultado);
+            res.json(resultado);
+        }catch(err){
+            console.error(err);
+            res.status(500).json({error: err});
         }
     }
 }

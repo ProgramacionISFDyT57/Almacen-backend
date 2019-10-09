@@ -71,4 +71,15 @@ export class ProductoService {
 
         });
     }
+    public BuscarProductoPorId (id:string): Promise<Producto>{
+        return new Promise(async (resolve, reject) => {
+            try{
+                const idd= new ObjectId(id);
+                const producto= await this.productos.findOne({_id:idd});
+                resolve(producto); 
+            }catch(err){
+                reject(err);
+            }
+        });
+    }
 }
