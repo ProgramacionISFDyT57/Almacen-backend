@@ -37,8 +37,19 @@ conexión.connect().then(async () => {
     app.get('/venta/listar',ventaController.ListarVentas);
     app.put('/venta/sacarmonto/:_id',ventaController.SacarMonto);
     app.delete('/venta/borrar',ventaController.BorrarVenta);
+    app.get('/venta/buscar/:_id', ventaController.BuscarVenta);
+    
     
     const compraController= new CompraController (conexión,nombredb);
+    app.post('/compra/crear',compraController.Crear);
+    app.put('/compra/insertar_producto/:_id', compraController.InsertarProductos);
+    app.get('/compra/listar', compraController.ListarCompras);
+    app.put('/compra/sacarmonto/:_id', compraController.SacarMonto);
+    app.delete('/compra/borrar', compraController.BorrarCompra);
+    app.get('/compra/buscar/:_id', compraController.BuscarCompra);
+    
+    
+    
     app.listen(port, () => {
         console.log(`Servidor de ejemplo escuchando en puerto ${port}!`);
     });
