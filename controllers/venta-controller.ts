@@ -22,6 +22,7 @@ export class VentaController {
         this.ListarVentas = this.ListarVentas.bind(this);
         this.SacarMonto = this.SacarMonto.bind(this);
         this.BorrarVenta=this.BorrarVenta.bind(this);
+        this.BuscarVenta=this.BuscarVenta.bind(this);
         this.productoservice = new ProductoService(conexion.db(nombredb));
         this.ventaservice= new VentaService(conexion.db(nombredb));
     }
@@ -92,14 +93,10 @@ export class VentaController {
         }
     }
     public async ListarVentas(req: Request, res: Response) {
-        const db = this.conexión.db(this.nombredb);
-        const ventas = db.collection(this.nombrecoleccion2);
-        const productos = db.collection(this.nombrecoleccion);
         try {
             const ventasdto: VentaDto[] = [];
-            const arregloventas = await ventas.find({ ventafinalizada: true }).toArray();
+            const arregloventas = await this.ventaservice.ArregloVentas();
             for (const venta of arregloventas) {
-
                 const ventanueva: VentaDto = {
                     fecha: venta.fecha,
                     monto_total: venta.monto_total,
@@ -108,8 +105,7 @@ export class VentaController {
                 console.log(venta.productos_venta)
                 if (venta.productos_venta) {
                     for (const producto of venta.productos_venta) {
-                        const productonuevo = new ObjectId(producto.id);
-                        const prod = await productos.findOne({ _id: productonuevo })
+                        const prod = await this.productoservice.BuscarProductoPorId(producto.id)
                         console.log(prod);
                         const mostrarprod: Producto = {
                             nombre: prod.nombre,

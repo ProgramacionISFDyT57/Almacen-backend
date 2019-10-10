@@ -61,6 +61,16 @@ export class VentaService {
                 reject(err);
             }
         })
+    }public ArregloVentas():Promise<Venta[]>{
+        return new Promise(async(resolve,reject)=>{
+            try{
+                const arregloventas = await this.ventas.find({ ventafinalizada: true }).toArray();
+                resolve(arregloventas);
+
+            }catch(err){
+                reject(err);
+            }
+        })
     }
     
 }
