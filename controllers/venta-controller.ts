@@ -98,6 +98,7 @@ export class VentaController {
             const arregloventas = await this.ventaservice.ArregloVentas();
             for (const venta of arregloventas) {
                 const ventanueva: VentaDto = {
+                    _id:venta._id,
                     fecha: venta.fecha,
                     monto_total: venta.monto_total,
                     productos_venta: []

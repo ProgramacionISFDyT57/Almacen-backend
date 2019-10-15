@@ -8,6 +8,7 @@ import { Request, Response } from 'express';
 import { Resolver } from 'dns';
 import { VentaController } from './controllers/venta-controller';
 import { CompraController } from './controllers/compra-controller';
+import { FacturaController } from './controllers/factura-controller';
 const app = express();
 app.use(bodyparser.json());
 const port = 3000;
@@ -47,6 +48,11 @@ conexión.connect().then(async () => {
     app.put('/compra/sacarmonto/:_id', compraController.SacarMonto);
     app.delete('/compra/borrar', compraController.BorrarCompra);
     app.get('/compra/buscar/:_id', compraController.BuscarCompra);
+
+
+    const facturaController=new FacturaController(conexión,nombredb);
+    app.post('/factura/crear',facturaController.Crearfactura);
+    app.get('/factura/listar',facturaController.ListarFacturas);
     
     
     
