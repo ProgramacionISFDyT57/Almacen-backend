@@ -9,6 +9,9 @@ import { Resolver } from 'dns';
 import { VentaController } from './controllers/venta-controller';
 import { CompraController } from './controllers/compra-controller';
 import { FacturaController } from './controllers/factura-controller';
+import {UsuarioController} from './controllers/usuario-controller';
+import {ProveedorController} from './controllers/proveedor-controller';
+import{AutenticacionController} from './controllers/autenticacion-controller';
 const app = express();
 app.use(bodyparser.json());
 const port = 3000;
@@ -53,6 +56,27 @@ conexión.connect().then(async () => {
     const facturaController=new FacturaController(conexión,nombredb);
     app.post('/factura/crear',facturaController.Crearfactura);
     app.get('/factura/listar',facturaController.ListarFacturas);
+    app.delete('/factura/borrar',facturaController.BorrarFacturas);
+
+
+    const usuarioController=new UsuarioController(conexión,nombredb);
+    app.post('/usuario/crear',usuarioController.Crear);
+    app.get('/usuario/listar',usuarioController.Listar);
+    app.delete('/usuario/borrar/:_id',usuarioController.Borrar);
+    app.get('/usuario/buscar',usuarioController.Buscar);
+    app.put('/usuario/modificar/:_id',usuarioController.Modificar);
+
+
+    const proveedorController=new ProveedorController(conexión,nombredb);
+    app.post('/proveedor/crear',proveedorController.Crear);
+    app.get('/proveedor/listar',proveedorController.Listar);
+    app.delete('/proveedor/borrar/:_id',proveedorController.Borrar);
+    app.get('/proveedor/buscar',proveedorController.Buscar);
+    app.put('/proveedor/modificar/:_id',proveedorController.Modificar);
+
+    const autenticacionController=new AutenticacionController(conexión,nombredb);
+    app.post('/login',autenticacionController.auntenticar);
+
     
     
     

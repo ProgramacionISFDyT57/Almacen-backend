@@ -7,42 +7,60 @@ import { ProductoCompra } from '../models/producto_compra';
 import { CompraDto } from '../models/compradto';
 import { ProductoService } from '../services/producto-service';
 import { CompraService } from '../services/compra-service';
+import { ProveedorService } from '../services/proveedor-service';
+import {Proveedor} from '../models/proveedor';
 export class CompraController {
     private nombredb: string;
     private nombrecoleccion = "Productos";
     private nombrecoleccion3 = "Compras";
+    private colleccion6 = "Proveedores";
     private conexión: MongoClient;
     private productoservice: ProductoService;
     private compraservice: CompraService;
+    private proveedorservice: ProveedorService;
     constructor(conexión: MongoClient, nombredb: string) {
         this.conexión = conexión;
         this.nombredb = nombredb;
         this.productoservice = new ProductoService(conexión.db(nombredb));
         this.compraservice = new CompraService(conexión.db(nombredb));
+        this.proveedorservice = new ProveedorService(conexión.db(nombredb));
         this.Crear = this.Crear.bind(this);
-        this.InsertarProductos=this.InsertarProductos.bind(this);
-        this.ListarCompras=this.ListarCompras.bind(this);
-        this.SacarMonto=this.SacarMonto.bind(this);
-        this.BorrarCompra=this.BorrarCompra.bind(this);
-        this.BuscarCompra=this.BuscarCompra.bind(this);
+        this.InsertarProductos = this.InsertarProductos.bind(this);
+        this.ListarCompras = this.ListarCompras.bind(this);
+        this.SacarMonto = this.SacarMonto.bind(this);
+        this.BorrarCompra = this.BorrarCompra.bind(this);
+        this.BuscarCompra = this.BuscarCompra.bind(this);
 
     }
     public async Crear(req: Request, res: Response) {
-        const compra1: Compra = {
-            fecha: new Date().toISOString(),
-            comprafinalizada: false
+        if (req.body._idproveedor) {
+            const compra1: Compra = {
+                fecha: new Date().toISOString(),
+                comprafinalizada: false,
+                _idproveedor: req.body._idproveedor
+            }
+            try {
+                const proveedor = await this.proveedorservice.BuscarProveedorPorId(req.body._idproveedor);
+                if (proveedor) {
+                    const compranueva = await this.compraservice.CrearCompra(compra1);
+                    console.log("Compra agregada");
+                    res.json({
+                        mensaje: "Compra agregada a la base de datos",
+                        id: compranueva,
+                    });
+
+                } else {
+                    res.status(404).json("El proveedor no está en la base de datos");
+                }
+            } catch (err) {
+                console.error(err);
+                res.status(500).json(err);
+            }
+        } else {
+            console.log("Falta la propiedad necesaria para crear la compra");
+            res.status(404).json("Falta la propiedad necesaria para crear la compra");
         }
-        try {
-            const compranueva = await this.compraservice.CrearCompra(compra1);
-            console.log("Compra agregada");
-            res.json({
-                mensaje: "Compra agregada a la base de datos",
-                id: compranueva,
-            });
-        } catch (err) {
-            console.error(err);
-            res.status(500).json(err);
-        }
+
     }
     public async InsertarProductos(req: Request, res: Response) {
         if (req.body._id && req.body.cantidad) {
@@ -58,9 +76,7 @@ export class CompraController {
                     id: req.body._id,
                     cantidad: req.body.cantidad
                 }
-                console.log("buscando compra");
-                const compra:Compra = await this.compraservice.BuscarCompra(req.params._id);
-                console.log("se encontro la compra");
+                const compra: Compra = await this.compraservice.BuscarCompra(req.params._id);
                 if (compra) {
                     const producto: Producto = await this.productoservice.BuscarProductoPorId(req.body._id);
                     if (compra.comprafinalizada) {
@@ -68,12 +84,12 @@ export class CompraController {
                         return;
                     }
                     if (producto) {
-                        const productomodificado = await this.productoservice.ModificarProducto(req.body._id, { cantidad: producto.cantidad + productoporcompra.cantidad });
+                        const productomodificado = await this.productoservice.ModificarProducto(req.body._id, {cantidad:producto.cantidad+productoporcompra.cantidad});
                         if (!compra.productos_compra) {
                             compra.productos_compra = []
                         }
                         compra.productos_compra.push(productoporcompra);
-                        const ventamodificada = await this.compraservice.ModificarCompra(req.params._id, compra.productos_compra)
+                        const compramodificada = await this.compraservice.ModificarCompra(req.params._id, compra.productos_compra)
 
                         res.send("Se ha agregado el objeto a la compra");
 
@@ -100,7 +116,8 @@ export class CompraController {
                 const compranueva: CompraDto = {
                     fecha: compra.fecha,
                     monto_total: compra.monto_total,
-                    productos_compra: []
+                    productos_compra: [],
+                    proveedor: []
                 }
                 console.log(compra.productos_compra)
                 if (compra.productos_compra) {
@@ -116,8 +133,18 @@ export class CompraController {
                         }
                         compranueva.productos_compra.push(mostrarprod);
                     }
+                    const prov = await this.proveedorservice.BuscarProveedorPorId(compra._idproveedor)
+                    if (prov) {
+                        const mostrarprov: Proveedor = {
+                            razon_social: prov.razon_social,
+                            cuil: prov.cuil,
+                            num_de_telefono: prov.num_de_telefono,
+                        }
+                        compranueva.proveedor.push(mostrarprov);
+                    }
                 }
                 comprasdto.push(compranueva);
+
             }
             console.log(comprasdto);
             res.json(comprasdto);

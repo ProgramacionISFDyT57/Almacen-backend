@@ -39,6 +39,16 @@ export class FacturaService {
             }
         })
     }
+    public BorrarFacturas():Promise<number>{
+        return new Promise(async(resolve,reject)=>{
+            try{
+                const facturasborradas=await this.facturas.deleteMany({});
+                resolve(facturasborradas.result.n);
+            }catch(err){
+                reject(err);
+            }
+        })
+    }
 
 
 

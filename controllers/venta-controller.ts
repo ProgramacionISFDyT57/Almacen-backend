@@ -66,7 +66,7 @@ export class VentaController {
                     }
                     if (producto) {
                         if (productoporventa.cantidad <= producto.cantidad) {
-                            const productomodificado = await this.productoservice.ModificarProducto(req.body._id,{cantidad:producto.cantidad-productoporventa.cantidad});
+                            const productomodificado = await this.productoservice.ModificarProducto(req.body._id, {cantidad:producto.cantidad-productoporventa.cantidad});
                             if (!venta.productos_venta) {
                                 venta.productos_venta = []
                             }
