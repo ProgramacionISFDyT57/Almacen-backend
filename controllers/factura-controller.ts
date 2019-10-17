@@ -26,13 +26,15 @@ export class FacturaController {
         this.productoservice = new ProductoService(conexion.db(nombredb))
         this.Crearfactura = this.Crearfactura.bind(this);
         this.ListarFacturas = this.ListarFacturas.bind(this);
+        this.BorrarFacturas=this.BorrarFacturas.bind(this);
     }
+
     public async Crearfactura(req: Request, res: Response) {
         if (req.body.num_de_factura && req.body._idventa && req.body.tipo_de_factura && req.body.tipo_de_iva) {
             const factura1: Factura = {
                 fecha: new Date().toISOString(),
                 num_de_factura: req.body.num_de_factura,
-                _idventa: req.body.id_venta,
+                _idventa: req.body._idventa,
                 tipo_de_factura: req.body.tipo_de_factura,
                 tipo_de_iva: req.body.tipo_de_iva
             }
@@ -60,6 +62,7 @@ export class FacturaController {
             const facturasdto: FacturaDto[] = [];
             const arreglofacturas = await this.facturaservice.ArregloFacturas();
             for (const factura of arreglofacturas) {
+                console.log('Venta de factura: ' + factura._idventa);
                 const ventadefactura = await this.ventaservice.BuscarVenta(factura._idventa);
                 const ventanueva: VentaDto = {
                     _id: ventadefactura._id,
@@ -109,6 +112,16 @@ export class FacturaController {
 
 
      
+    }public async BorrarFacturas (req: Request, res: Response) {
+        try {
+            const del = await this.facturaservice.BorrarFacturas();
+            console.log("Se borro correctamente la factura");
+            console.log("Se borraron " + del);
+            res.send("Se borro correctamente " + del + " factura/s");
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
     }
     
 

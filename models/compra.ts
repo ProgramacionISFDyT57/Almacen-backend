@@ -4,4 +4,5 @@ export interface Compra{
     monto_total?: number;
     productos_compra?: ProductoCompra[];
     comprafinalizada: boolean;
+    _idproveedor:string;
 }
