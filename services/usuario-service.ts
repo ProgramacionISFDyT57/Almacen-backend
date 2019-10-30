@@ -89,6 +89,7 @@ export class UsuarioService {
                 resolve(usuario);
 
             }catch(err){
+                console.log("error al buscar usuario");
                 reject(err);
             }
             

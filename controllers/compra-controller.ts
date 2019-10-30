@@ -13,7 +13,7 @@ export class CompraController {
     private nombredb: string;
     private nombrecoleccion = "Productos";
     private nombrecoleccion3 = "Compras";
-    private colleccion6 = "Proveedores";
+    private nombrecolleccion6 = "Proveedores";
     private conexión: MongoClient;
     private productoservice: ProductoService;
     private compraservice: CompraService;
@@ -84,7 +84,13 @@ export class CompraController {
                         return;
                     }
                     if (producto) {
-                        const productomodificado = await this.productoservice.ModificarProducto(req.body._id, {cantidad:producto.cantidad+productoporcompra.cantidad});
+                        console.log(producto.cantidad);
+                        console.log(productoporcompra.cantidad);
+                        console.log(producto.cantidad+productoporcompra.cantidad);
+                        const cantidadnueva=producto.cantidad+productoporcompra.cantidad;
+                        const productomodificado = await this.productoservice.ModificarProducto(req.body._id, {cantidad:cantidadnueva});
+                        console.log(productomodificado);
+            
                         if (!compra.productos_compra) {
                             compra.productos_compra = []
                         }
