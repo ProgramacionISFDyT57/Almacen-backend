@@ -24,12 +24,12 @@ export class FacturaController {
         this.facturaservice = new FacturaService(conexion.db(nombredb));
         this.ventaservice = new VentaService(conexion.db(nombredb));
         this.productoservice = new ProductoService(conexion.db(nombredb))
-        this.Crearfactura = this.Crearfactura.bind(this);
+        this.CrearFactura = this.CrearFactura.bind(this);
         this.ListarFacturas = this.ListarFacturas.bind(this);
         this.BorrarFacturas=this.BorrarFacturas.bind(this);
     }
 
-    public async Crearfactura(req: Request, res: Response) {
+    public async CrearFactura(req: Request, res: Response) {
         if (req.body.num_de_factura && req.body._idventa && req.body.tipo_de_factura && req.body.tipo_de_iva) {
             const factura1: Factura = {
                 fecha: new Date().toISOString(),
@@ -103,15 +103,7 @@ export class FacturaController {
                 res.status(500).json(err);
 
          }
-        
-
-
-
-
-
-
-
-     
+         
     }public async BorrarFacturas (req: Request, res: Response) {
         try {
             const del = await this.facturaservice.BorrarFacturas();

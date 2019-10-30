@@ -12,6 +12,7 @@ import { FacturaController } from './controllers/factura-controller';
 import {UsuarioController} from './controllers/usuario-controller';
 import {ProveedorController} from './controllers/proveedor-controller';
 import{AutenticacionController} from './controllers/autenticacion-controller';
+import { RemitoController } from './controllers/remito-controller';
 const app = express();
 app.use(bodyparser.json());
 const port = 3000;
@@ -25,6 +26,12 @@ conexión.connect().then(async () => {
     app.get('/',async (req:Request, res:Response)=>{
         res.status(200).send('Funcionando almacen-backend');
     })
+    
+    const autenticacionController=new AutenticacionController(conexión,nombredb);
+    app.post('/login',autenticacionController.Login);
+
+    //app.use(autenticacionController.Token);
+    
     const productoController= new ProductoController(conexión,nombredb);
     app.post('/producto/crear', productoController.Crear);
     app.get('/producto/listar', productoController.Listar);
@@ -54,7 +61,7 @@ conexión.connect().then(async () => {
 
 
     const facturaController=new FacturaController(conexión,nombredb);
-    app.post('/factura/crear',facturaController.Crearfactura);
+    app.post('/factura/crear',facturaController.CrearFactura);
     app.get('/factura/listar',facturaController.ListarFacturas);
     app.delete('/factura/borrar',facturaController.BorrarFacturas);
 
@@ -74,8 +81,10 @@ conexión.connect().then(async () => {
     app.get('/proveedor/buscar',proveedorController.Buscar);
     app.put('/proveedor/modificar/:_id',proveedorController.Modificar);
 
-    const autenticacionController=new AutenticacionController(conexión,nombredb);
-    app.post('/login',autenticacionController.auntenticar);
+    const remitoController=new RemitoController(conexión,nombredb);
+    app.post('/remito/crear', remitoController.CrearRemito);
+    app.get('/remito/listar', remitoController.ListarRemitos);
+
 
     
     
