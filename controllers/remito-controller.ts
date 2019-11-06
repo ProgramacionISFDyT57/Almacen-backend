@@ -32,6 +32,7 @@ export class RemitoController {
         this.remitoservice = new RemitoService(conexion.db(nombredb));
         this.CrearRemito=this.CrearRemito.bind(this);
         this.ListarRemitos=this.ListarRemitos.bind(this);
+        this.BorrarRemitos=this.BorrarRemitos.bind(this);
     }
     public async CrearRemito(req: Request, res: Response) {
         if (req.body.num_de_remito && req.body._idproveedor && req.body._idcompra) {
@@ -107,6 +108,7 @@ export class RemitoController {
     } 
     public async BorrarRemitos(req:Request, res:Response){
         try {
+            
             const del = await this.remitoservice.BorrarRemitos();
             console.log("Se borro correctamente el remito");
             console.log("Se borraron " + del);

@@ -8,11 +8,13 @@ import { Request, Response } from 'express';
 import { Resolver } from 'dns';
 import { VentaController } from './controllers/venta-controller';
 import { CompraController } from './controllers/compra-controller';
-import { FacturaController } from './controllers/factura-controller';
+import { FacturaVentaController } from './controllers/facturaventa-controller';
+import {FacturaCompraController} from './controllers/facturacompra-controller';
 import {UsuarioController} from './controllers/usuario-controller';
 import {ProveedorController} from './controllers/proveedor-controller';
 import{AutenticacionController} from './controllers/autenticacion-controller';
 import { RemitoController } from './controllers/remito-controller';
+import { createNonNullExpression } from 'typescript';
 const app = express();
 app.use(bodyparser.json());
 const port = 3000;
@@ -60,10 +62,15 @@ conexión.connect().then(async () => {
     app.get('/compra/buscar/:_id', compraController.BuscarCompra);
 
 
-    const facturaController=new FacturaController(conexión,nombredb);
-    app.post('/factura/crear',facturaController.CrearFactura);
-    app.get('/factura/listar',facturaController.ListarFacturas);
-    app.delete('/factura/borrar',facturaController.BorrarFacturas);
+    const facturaventaController=new FacturaVentaController(conexión,nombredb);
+    app.post('/facturaventa/crear',facturaventaController.CrearFactura);
+    app.get('/facturaventa/listar',facturaventaController.ListarFacturas);
+    app.delete('/facturaventa/borrar',facturaventaController.BorrarFacturas);
+
+    const facturacompraController=new FacturaCompraController(conexión,nombredb);
+    app.post('/facturacompra/crear',facturacompraController.CrearFactura);
+    app.get('/facturacompra/listar',facturacompraController.ListarFacturas);
+    app.delete('/facturacompra/borrar',facturacompraController.BorrarFacturas);
 
 
     const usuarioController=new UsuarioController(conexión,nombredb);
@@ -84,6 +91,7 @@ conexión.connect().then(async () => {
     const remitoController=new RemitoController(conexión,nombredb);
     app.post('/remito/crear', remitoController.CrearRemito);
     app.get('/remito/listar', remitoController.ListarRemitos);
+    app.delete('/remito/borrar', remitoController.BorrarRemitos);
 
 
     

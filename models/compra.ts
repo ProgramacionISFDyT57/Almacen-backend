@@ -5,4 +5,5 @@ export interface Compra{
     productos_compra?: ProductoCompra[];
     comprafinalizada: boolean;
     _idproveedor:string;
+    _idnotadecredito?:string;
 }

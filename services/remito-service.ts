@@ -29,7 +29,7 @@ export class RemitoService {
     }
     public BorrarRemitos():Promise<number>{
         return new Promise(async(resolve,reject)=>{
-            try{
+            try{   
                 const remitosborrados=await this.remitos.deleteMany({});
                 resolve(remitosborrados.result.n);
             }catch(err){

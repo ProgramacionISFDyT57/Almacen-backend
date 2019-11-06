@@ -9,6 +9,7 @@ import { ProductoService } from '../services/producto-service';
 import { CompraService } from '../services/compra-service';
 import { ProveedorService } from '../services/proveedor-service';
 import {Proveedor} from '../models/proveedor';
+import {NotaDeCreditoCompraService} from '../services/nota_de_credito_compra-service';
 export class CompraController {
     private nombredb: string;
     private nombrecoleccion = "Productos";
@@ -18,12 +19,14 @@ export class CompraController {
     private productoservice: ProductoService;
     private compraservice: CompraService;
     private proveedorservice: ProveedorService;
+    private notadecredcompraservice:NotaDeCreditoCompraService
     constructor(conexión: MongoClient, nombredb: string) {
         this.conexión = conexión;
         this.nombredb = nombredb;
         this.productoservice = new ProductoService(conexión.db(nombredb));
         this.compraservice = new CompraService(conexión.db(nombredb));
         this.proveedorservice = new ProveedorService(conexión.db(nombredb));
+        this.notadecredcompraservice=new NotaDeCreditoCompraService(conexión.db(nombredb));
         this.Crear = this.Crear.bind(this);
         this.InsertarProductos = this.InsertarProductos.bind(this);
         this.ListarCompras = this.ListarCompras.bind(this);
@@ -37,9 +40,14 @@ export class CompraController {
             const compra1: Compra = {
                 fecha: new Date().toISOString(),
                 comprafinalizada: false,
-                _idproveedor: req.body._idproveedor
+                _idproveedor: req.body._idproveedor,
             }
             try {
+                if(req.body._idnotadecredito){
+                    compra1._idnotadecredito=req.body._idnotadecredito;
+                    
+    
+                }
                 const proveedor = await this.proveedorservice.BuscarProveedorPorId(req.body._idproveedor);
                 if (proveedor) {
                     const compranueva = await this.compraservice.CrearCompra(compra1);
