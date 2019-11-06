@@ -1,12 +1,12 @@
 import { Collection, Db, ObjectId, ObjectID } from "mongodb";
 import { Venta } from '../models/venta';
-import {Factura} from '../models/factura';
-export class FacturaService {
+import {FacturaCompra} from '../models/factura_compra';
+export class FacturaCompraService {
     private facturas: Collection<any>;
     constructor(db: Db) {
-        this.facturas = db.collection('Facturas');
+        this.facturas = db.collection('Facturas de compra');
     }
-    public CrearFactura(factura: Factura): Promise<string> {
+    public CrearFactura(factura: FacturaCompra): Promise<string> {
         return new Promise(async (resolve, reject) => {
             try {
                 const res = await this.facturas.insertOne(factura);
@@ -16,7 +16,7 @@ export class FacturaService {
             }
         });
     }
-    public BuscarFactura(_idfactura:string):Promise<Factura>{
+    public BuscarFactura(_idfactura:string):Promise<FacturaCompra>{
         return new Promise(async (resolve,reject)=>{
             try{
                 const id=new ObjectID(_idfactura)
@@ -28,7 +28,7 @@ export class FacturaService {
             }
         })
     }
-    public ArregloFacturas():Promise<Factura[]>{
+    public ArregloFacturas():Promise<FacturaCompra[]>{
         return new Promise(async(resolve,reject)=>{
             try{
                 const arreglofacturas = await this.facturas.find().toArray();
@@ -49,8 +49,5 @@ export class FacturaService {
             }
         })
     }
+}    
 
-
-
-
-}

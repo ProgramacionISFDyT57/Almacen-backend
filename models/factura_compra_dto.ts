@@ -1,8 +1,8 @@
-import {VentaDto} from '../models/ventadto'
-export class FacturaDto{
+import {CompraDto} from './compradto';
+export class FacturaCompraDto{
     fecha:string;
     num_de_factura:number;
-    venta:VentaDto;
+    compra:CompraDto;
     tipo_de_factura:string;
     tipo_de_iva:number;
     montoiva:number;

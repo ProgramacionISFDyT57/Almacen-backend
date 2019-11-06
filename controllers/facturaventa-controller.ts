@@ -1,27 +1,28 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
 import { request } from 'https';
-import { FacturaService } from '../services/factura-service';
+import { FacturaVentaService } from '../services/facturaventa-service';
 import { VentaService } from '../services/venta-service';
 import { VentaDto } from '../models/ventadto';
 import { Producto } from '../models/producto';
 
-import { Factura } from '../models/factura';
+
+import { FacturaVenta } from '../models/factura_venta';
 import { Venta } from '../models/venta';
-import { FacturaDto } from '../models/facturadto';
+import { FacturaVentaDto } from '../models/factura_venta_dto';
 import { ProductoService } from '../services/producto-service';
-export class FacturaController {
+export class FacturaVentaController {
     private nombredb: string;
     private nombrecoleccion2 = "Ventas";
-    private nombrecoleccion4 = "Facturas";
+    private nombrecoleccion4 = "Facturas de venta";
     private conexión: MongoClient;
-    private facturaservice: FacturaService;
+    private facturaventaservice: FacturaVentaService;
     private ventaservice: VentaService;
     private productoservice: ProductoService;
     constructor(conexion: MongoClient, nombredb: string, ) {
         this.conexión = conexion;
         this.nombredb = nombredb;
-        this.facturaservice = new FacturaService(conexion.db(nombredb));
+        this.facturaventaservice = new FacturaVentaService(conexion.db(nombredb));
         this.ventaservice = new VentaService(conexion.db(nombredb));
         this.productoservice = new ProductoService(conexion.db(nombredb))
         this.CrearFactura = this.CrearFactura.bind(this);
@@ -31,15 +32,16 @@ export class FacturaController {
 
     public async CrearFactura(req: Request, res: Response) {
         if (req.body.num_de_factura && req.body._idventa && req.body.tipo_de_factura && req.body.tipo_de_iva) {
-            const factura1: Factura = {
+            const factura1: FacturaVenta = {
                 fecha: new Date().toISOString(),
                 num_de_factura: req.body.num_de_factura,
                 _idventa: req.body._idventa,
                 tipo_de_factura: req.body.tipo_de_factura,
-                tipo_de_iva: req.body.tipo_de_iva
+                tipo_de_iva: req.body.tipo_de_iva,
+                cliente:req.body.cliente
             }
             try {
-                const facturanueva = await this.facturaservice.CrearFactura(factura1);
+                const facturanueva = await this.facturaventaservice.CrearFactura(factura1);
                 console.log("Factura agregada");
                 res.json({
                     mensaje: "Factura agregada a la base de datos",
@@ -59,8 +61,8 @@ export class FacturaController {
     }
     public async ListarFacturas(req: Request, res: Response) {
         try {
-            const facturasdto: FacturaDto[] = [];
-            const arreglofacturas = await this.facturaservice.ArregloFacturas();
+            const facturasdto: FacturaVentaDto[] = [];
+            const arreglofacturas = await this.facturaventaservice.ArregloFacturas();
             for (const factura of arreglofacturas) {
                 console.log('Venta de factura: ' + factura._idventa);
                 const ventadefactura = await this.ventaservice.BuscarVenta(factura._idventa);
@@ -85,10 +87,11 @@ export class FacturaController {
                     }
                 } const calculoiva = (21 * ventanueva.monto_total) / 100;
 
-                const facturanueva: FacturaDto = {
+                const facturanueva: FacturaVentaDto = {
                     fecha: factura.fecha,
                     num_de_factura: factura.num_de_factura,
                     venta: ventanueva,
+                    cliente:factura.cliente,
                     tipo_de_factura: factura.tipo_de_factura,
                     tipo_de_iva: factura.tipo_de_iva,
                     montoiva: calculoiva + ventanueva.monto_total
@@ -106,10 +109,16 @@ export class FacturaController {
          
     }public async BorrarFacturas (req: Request, res: Response) {
         try {
-            const del = await this.facturaservice.BorrarFacturas();
-            console.log("Se borro correctamente la factura");
-            console.log("Se borraron " + del);
-            res.send("Se borro correctamente " + del + " factura/s");
+            const facturas=await this.facturaventaservice.ArregloFacturas();
+            if(facturas){
+                const del = await this.facturaventaservice.BorrarFacturas();
+                console.log("Se borro correctamente la factura");
+                console.log("Se borraron " + del);
+                res.send("Se borro correctamente " + del + " factura/s");    
+            }else{
+                res.status(404).json("No hay facturas guardadas en la base de datos");
+            }
+            
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
