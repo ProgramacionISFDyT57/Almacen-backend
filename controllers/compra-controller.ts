@@ -8,8 +8,8 @@ import { CompraDto } from '../models/compradto';
 import { ProductoService } from '../services/producto-service';
 import { CompraService } from '../services/compra-service';
 import { ProveedorService } from '../services/proveedor-service';
-import {Proveedor} from '../models/proveedor';
-import {NotaDeCreditoCompraService} from '../services/nota_de_credito_compra-service';
+import { Proveedor } from '../models/proveedor';
+import { NotaDeCreditoCompraService } from '../services/nota_de_credito_compra-service';
 export class CompraController {
     private nombredb: string;
     private nombrecoleccion = "Productos";
@@ -19,14 +19,14 @@ export class CompraController {
     private productoservice: ProductoService;
     private compraservice: CompraService;
     private proveedorservice: ProveedorService;
-    private notadecredcompraservice:NotaDeCreditoCompraService
+    private notadecredcompraservice: NotaDeCreditoCompraService
     constructor(conexión: MongoClient, nombredb: string) {
         this.conexión = conexión;
         this.nombredb = nombredb;
         this.productoservice = new ProductoService(conexión.db(nombredb));
         this.compraservice = new CompraService(conexión.db(nombredb));
         this.proveedorservice = new ProveedorService(conexión.db(nombredb));
-        this.notadecredcompraservice=new NotaDeCreditoCompraService(conexión.db(nombredb));
+        this.notadecredcompraservice = new NotaDeCreditoCompraService(conexión.db(nombredb));
         this.Crear = this.Crear.bind(this);
         this.InsertarProductos = this.InsertarProductos.bind(this);
         this.ListarCompras = this.ListarCompras.bind(this);
@@ -43,10 +43,8 @@ export class CompraController {
                 _idproveedor: req.body._idproveedor,
             }
             try {
-                if(req.body._idnotadecredito){
-                    compra1._idnotadecredito=req.body._idnotadecredito;
-                    
-    
+                if (req.body._idnotadecredito) {
+                    compra1._idnotadecredito = req.body._idnotadecredito;
                 }
                 const proveedor = await this.proveedorservice.BuscarProveedorPorId(req.body._idproveedor);
                 if (proveedor) {
@@ -94,11 +92,11 @@ export class CompraController {
                     if (producto) {
                         console.log(producto.cantidad);
                         console.log(productoporcompra.cantidad);
-                        console.log(producto.cantidad+productoporcompra.cantidad);
-                        const cantidadnueva=producto.cantidad+productoporcompra.cantidad;
-                        const productomodificado = await this.productoservice.ModificarProducto(req.body._id, {cantidad:cantidadnueva});
+                        console.log(producto.cantidad + productoporcompra.cantidad);
+                        const cantidadnueva = producto.cantidad + productoporcompra.cantidad;
+                        const productomodificado = await this.productoservice.ModificarProducto(req.body._id, { cantidad: cantidadnueva });
                         console.log(productomodificado);
-            
+
                         if (!compra.productos_compra) {
                             compra.productos_compra = []
                         }
@@ -128,8 +126,10 @@ export class CompraController {
             const arreglocompras = await this.compraservice.ArregloCompras();
             for (const compra of arreglocompras) {
                 const compranueva: CompraDto = {
+                    _id:compra._id,
                     fecha: compra.fecha,
                     monto_total: compra.monto_total,
+                    _idnotadecredito:compra._idnotadecredito,
                     productos_compra: [],
                     proveedor: []
                 }
@@ -178,10 +178,36 @@ export class CompraController {
                 }
                 for (const productodecompra of compra.productos_compra) {
                     const producto: Producto = await this.productoservice.BuscarProductoPorId(productodecompra.id);
-                    montototal = montototal + productodecompra.cantidad * producto.precio
+                    console.log("ok");
+                    montototal = montototal + productodecompra.cantidad * producto.precio;
+                    const compramodificada = await this.compraservice.FinalizarCompra(req.params._id, montototal);
+                    if (compra._idnotadecredito) {
+                        const notadecredito = await this.notadecredcompraservice.BuscarNotaPorId(compra._idnotadecredito);
+                        if (!notadecredito.notafinalizada) {
+                            if (montototal >= notadecredito.monto_a_favor) {
+                                montototal = montototal - notadecredito.monto_a_favor;
+                                notadecredito.monto_a_favor = notadecredito.monto_a_favor - notadecredito.monto_a_favor;
+                                const proveedormodificado = await this.proveedorservice.ModificarProveedor(compra._idproveedor, {monto_a_favor:notadecredito.monto_a_favor});
+                                
+                            }
+                            else {
+                                montototal = montototal - notadecredito.monto_a_favor;
+                                notadecredito.monto_a_favor = (notadecredito.monto_a_favor + montototal) - notadecredito.monto_a_favor;
+                                const proveedormodificado = await this.proveedorservice.ModificarProveedor(compra._idproveedor, {monto_a_favor: notadecredito.monto_a_favor});
+                                
+                            }
+                        } else {
+                            res.status(404).send("La nota de credito ha sido finalizada");
+                        }
+        
+                    }
+                    
+
+                    res.status(200).send("La venta ha sido finalizada " + "Monto total= " + montototal);
+                    
+                    console.log("sigue ok");
                 }
-                const ventamodificada = await this.compraservice.FinalizarCompra(req.params._id, montototal);
-                res.send("Compra modificada y finalizada " + "Monto total= " + montototal);
+        
             }
         } catch (err) {
             console.error(err);

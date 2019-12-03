@@ -88,7 +88,8 @@ export class FacturaVentaController {
                 } const calculoiva = (21 * ventanueva.monto_total) / 100;
 
                 const facturanueva: FacturaVentaDto = {
-                    fecha: factura.fecha,
+                    _id:factura._id,
+                    fecha:factura.fecha,
                     num_de_factura: factura.num_de_factura,
                     venta: ventanueva,
                     cliente:factura.cliente,

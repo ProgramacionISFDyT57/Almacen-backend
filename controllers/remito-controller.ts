@@ -94,6 +94,7 @@ export class RemitoController {
                     }
                 }
                 const remitonuevo: RemitoDto = {
+                    _id:remito._id,
                     fecha: remito.fecha,
                     num_de_remito: remito.num_de_remito,
                     compra: compranueva,

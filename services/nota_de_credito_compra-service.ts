@@ -46,7 +46,18 @@ export class NotaDeCreditoCompraService {
             }
         })
     }
-    
+    public FinalizarNota(_idnota: string): Promise<void> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const id = new ObjectId(_idnota);
+                const notamodificada = await this.notas_de_credito_de_compra.updateOne({ _id: id },
+                    { $set: { comprafinalizada: true} })
+                    resolve();
+            } catch (err) {
+                reject(err);
+            }
+        })
+    }
 
 
 }    

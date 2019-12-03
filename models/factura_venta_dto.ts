@@ -1,5 +1,6 @@
 import {VentaDto} from './ventadto'
-export class FacturaVentaDto{
+export interface FacturaVentaDto{
+    _id?:string;
     fecha:string;
     num_de_factura:number;
     venta:VentaDto;
