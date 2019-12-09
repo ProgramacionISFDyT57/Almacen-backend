@@ -37,7 +37,7 @@ export class ProveedorController {
                 razon_social: req.body.razon_social,
                 cuil: req.body.cuil,
                 num_de_telefono: req.body.num_de_telefono,
-
+                monto_a_favor:req.body.monto_a_favor
             }
             try {
                 const producto= await this.proveedorservice.CrearProveedor(proveedor1);
@@ -85,7 +85,7 @@ export class ProveedorController {
 
     }
     public async Modificar(req: Request, res: Response) {
-        if (req.body.razon_social || req.body.cuil || req.body.num_de_telefono) {
+        if (req.body.razon_social || req.body.cuil || req.body.num_de_telefono ||req.body.monto_a_favor) {
             try {
                 const p1: any = {}
                 if (req.body.razon_social) {
@@ -96,6 +96,9 @@ export class ProveedorController {
                 }
                 if (req.body.num_de_telefono) {
                     p1.num_de_telefono = req.body.num_de_telefono;
+                }
+                if(req.body.monto_a_favor){
+                    p1.monto_a_favor=req.body.monto_a_favor;
                 }
                 
                 const resultadomodificado = await this.proveedorservice.ModificarProveedor(req.params._id, p1);

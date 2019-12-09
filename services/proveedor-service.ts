@@ -1,5 +1,6 @@
 import { Collection, Db, ObjectId } from "mongodb";
 import { Proveedor } from '../models/proveedor';
+import { rejects } from "assert";
 export class ProveedorService {
     private proveedores: Collection<any>;
     constructor(db: Db) {
@@ -71,6 +72,7 @@ export class ProveedorService {
 
         });
     }
+
     public BuscarProveedorPorId (id:string): Promise<Proveedor>{
         return new Promise(async (resolve, reject) => {
             try{

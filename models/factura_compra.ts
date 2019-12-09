@@ -1,4 +1,5 @@
 export interface FacturaCompra{
+    _id?:string;
     fecha:string;
     num_de_factura:number;
     _idcompra:string;

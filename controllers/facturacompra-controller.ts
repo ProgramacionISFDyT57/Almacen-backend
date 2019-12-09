@@ -100,6 +100,7 @@ export class FacturaCompraController {
                 }
 
                 const facturanueva: FacturaCompraDto = {
+                    _id:factura._id,
                     fecha: factura.fecha,
                     num_de_factura: factura.num_de_factura,
                     compra: compranueva,

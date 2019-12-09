@@ -15,6 +15,7 @@ import {ProveedorController} from './controllers/proveedor-controller';
 import{AutenticacionController} from './controllers/autenticacion-controller';
 import { RemitoController } from './controllers/remito-controller';
 import { createNonNullExpression } from 'typescript';
+import { NotaDeCreditoCompraController } from './controllers/nota_de_credito_compra-controller';
 const app = express();
 app.use(bodyparser.json());
 const port = 3000;
@@ -92,6 +93,10 @@ conexión.connect().then(async () => {
     app.post('/remito/crear', remitoController.CrearRemito);
     app.get('/remito/listar', remitoController.ListarRemitos);
     app.delete('/remito/borrar', remitoController.BorrarRemitos);
+
+    const notadecreditocompraController=new NotaDeCreditoCompraController(conexión,nombredb);
+    app.post('/notacompra/crear',notadecreditocompraController.CrearNotaDeCredito);
+    app.get('/notacompra/listar',notadecreditocompraController.ListarNotasDeCredito);
 
 
     
