@@ -174,3 +174,132 @@ Json
  “Se modificó correctamente el producto”
  ~~~
 
+## Venta
+
+### Post/venta/crear
+
+Se crea una nueva venta y se la ingresa a la base de datos
+
+*Formato de respuesta*
+~~~
+Json
+[
+    {
+    “Mensaje”: “Venta agregada a la base de datos”,
+    “id”:” hfberiufuifbpiub43kth4blk34jb3iy3o4y5oi345go345gui”
+    }
+]
+~~~
+
+### Put/venta/insertar_producto/:_id
+
+A la venta ya creada le ingresamos los productos que van a formar parte de esa venta
+
+*Parámetro de ruta*
+~~~
+:_id=232454676iyujtht4
+~~~
+
+*Cuerpo de solicitud*
+~~~
+Json
+[
+    {
+    “id”:”4iuu35i34ub534h6bio634p63”,
+    “cantidad”:”3”
+    }
+]
+~~~
+
+*Formato de respuesta*
+~~~
+“Se ha agregado el objeto a la venta”
+~~~
+
+### Get/venta/listar
+
+Devuelve un listado de todas las ventas existentes en la base de datos
+
+*Formato de respuesta*
+~~~
+Json
+[
+    {
+    “Id”:””,
+    “Fecha”:”15/4/20”
+    “Monto total”:”240”
+    }
+]
+~~~
+*Productos de la venta*
+~~~
+[
+    {
+    “Nombre”: “”
+    “Cantidad”:”3”,
+    “Marca”: “”
+    “Precio”:”80”,
+    “Código de barras”:””
+    }
+]
+~~~
+### Put/venta/sacarmonto/:_id
+
+Calcula el monto total de la venta teniendo en cuenta el precio de cada uno de los productos que forman parte de la venta ya creada
+
+*Parámetro de ruta*
+~~~
+:_id=23243456576jhg445h4
+~~~
+*Formato de respuesta*
+~~~
+Json
+[
+    {
+    “Mensaje”: “Venta modificada y finalizada”,
+    “Monto total”:”240”
+    }
+]
+~~~
+
+### Delete/venta/borrar
+
+Borra las ventas de la base de datos
+
+*Formato de respuesta*
+~~~
+“Se borraron x venta/s”
+~~~
+
+### Get/venta/buscar/:_id
+
+Nos permite obtener una venta a través del id
+
+*Parámetro de ruta*
+~~~
+:_id=234565ytbef435
+~~~
+*Formato de respuesta*
+~~~
+Json
+[
+    {
+    “Id”:””,
+    “Fecha”:”15/4/20”
+    “Monto total”:”240”
+    }
+]
+~~~
+*Productos de la venta*
+~~~
+[
+    {
+    “Nombre”: “”
+    “Cantidad”:”3”,
+    “Marca”: “”
+    “Precio”:”80”,
+    “Código de barras”:””
+    }
+]
+~~~
+
