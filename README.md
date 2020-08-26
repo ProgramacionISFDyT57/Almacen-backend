@@ -1,6 +1,6 @@
    # Bienvenidos al proyecto backend  
     
- ##  Es un sistema para almacén
+ ##  Es un sistema destinado para almacenes
       
 **Este sistema busca brindar una plataforma para la gestión de inventario, de compras y de ventas de un negocio con el fin de reducir la carga de trabajo en un 50%**
 
