@@ -28,58 +28,48 @@
   
   ### Encabezado
  ~~~
-Json
-[
     {
     "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvYXF1aUBnbWFpbC5jb20iLCJub21icmUiOiJqb2FxdWkiLCJmZWNoYSI6IjIwMTktMTAtMjhUMjM6MjA6MTIuMjUyWiIsIm
     lhdCI6MTU3MjMwNDgxMn0.l6AFo7UirafIo0ubkITm52adlw615mh4RwNMdObTHmM"
     }
-]  
   ~~~
   
   ## Iniciar Sesión
   
-  - #### Post/login
+  - #### POST
+  ##### /login
 
  Devuelve token de autenticación requerido para el resto de solicitudes
 
 *Cuerpo de solicitud*
 
 ~~~
-
-Json
-[
     {
     “Nombre”: “Joaquín”,
     “Mail”:joaquin@gmail.com,
     “Clave”:123456789”
     }
-]
 ~~~
 
 *Formato de respuesta*
 
 ~~~
-Json
-[
     {
     “Mensaje”:” Sesión iniciada con éxito”,
     “Token”:”eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvYXF1aUBnbWFpbC5jb20iLCJub21icmUiOiJqb2FxdWkiLCJmZWNoYSI6IjIwMTktMTAtMjhUMjM6MjA6MTIuMjU
             yWiIsImlhdCI6MTU3MjMwNDgxMn0.l6AFo7UirafIo0ubkITm52adlw615mh4RwNMdObTHmM “
     }
-]
 ~~~
 
 ## Producto
 
-- #### Post/producto/crear
+- #### POST
+##### /producto/crear
 
 Agrega un nuevo producto a la base de datos
 
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     "Nombre":"" 
     "Cantidad":""
@@ -87,26 +77,21 @@ Json
     "Precio":""
     "Código de barras":""
     }
- ]
   ~~~
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Mensaje”: “Producto agregado a la base de datos”
     }
-]
 ~~~
 
-- #### Get/producto/listar
+- #### GET
+##### /producto/listar
 
 Devuelve un listado de todos los productos existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     "Id": "", 
     “Nombre”: “”,
@@ -115,10 +100,10 @@ Json
     “Precio”: “ ”,
     “Código de barras”:””
     }
-]
 ~~~
 
-- #### Delete/producto/borrar/:_id
+- #### DELETE
+##### /producto/borrar/:_id
 
 Borramos el producto a través del id
 
@@ -128,17 +113,18 @@ Borramos el producto a través del id
 ~~~
 *Formato de respuesta*
 ~~~
- "Se borró correctamente”
+    {
+    "Mensaje": "Se borró correctamente”
+    }
 ~~~
 
-- #### Get/producto/buscar
+- #### GET
+##### /producto/buscar
 
 Devuelve uno o más productos según la propiedad de producto utilizada para buscar
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Id”:””,
     “Nombre”: “”,
@@ -147,10 +133,10 @@ Json
     “Precio”: “80”,
     “Código de barras”:””
     }
- ]
  ~~~
  
- - #### Put/producto/modificar/:_id
+ - #### PUT
+ ##### /producto/modificar/:_id
  
  Se modifica una o más propiedades del producto según se desee
  
@@ -161,8 +147,6 @@ Json
 
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “Nombre”: “”,
     “Cantidad”:”3”,
@@ -170,32 +154,32 @@ Json
     “Precio”: “80”,
     “Código de barras”:””
     }
- ]
  ~~~
  
  *Formato de respuesta*
  ~~~
- “Se modificó correctamente el producto”
+     {
+     "Mensaje": “Se modificó correctamente el producto”
+     }
  ~~~
 
 ## Venta
 
- - #### Post/venta/crear
+ - #### POST
+ ##### /venta/crear
 
 Se crea una nueva venta y se la ingresa a la base de datos
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Mensaje”: “Venta agregada a la base de datos”,
     “id”:” hfberiufuifbpiub43kth4blk34jb3iy3o4y5oi345go345gui”
     }
-]
 ~~~
 
- - #### Put/venta/insertar_producto/:_id
+ - #### PUT
+ ##### /venta/insertar_producto/:_id
 
 A la venta ya creada le ingresamos los productos que van a formar parte de esa venta
 
@@ -206,34 +190,31 @@ A la venta ya creada le ingresamos los productos que van a formar parte de esa v
 
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “id”:”4iuu35i34ub534h6bio634p63”,
     “cantidad”:”3”
     }
-]
 ~~~
 
 *Formato de respuesta*
 ~~~
-“Se ha agregado el objeto a la venta”
+    {
+    "Mensaje": “Se ha agregado el objeto a la venta”
+    }
 ~~~
 
- - #### Get/venta/listar
+ - #### GET
+ ##### /venta/listar
 
 Devuelve un listado de todas las ventas existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Id”:””,
     “Fecha”:”15/4/20”
     “Monto total”:”240”
     }
-]
 ~~~
 *Productos de la venta*
 ~~~
@@ -245,7 +226,8 @@ Json
     “Código de barras”:””
     }
 ~~~
- - #### Put/venta/sacarmonto/:_id
+ - #### PUT
+ ##### /venta/sacarmonto/:_id
 
 Calcula el monto total de la venta teniendo en cuenta el precio de cada uno de los productos que forman parte de la venta ya creada
 
@@ -255,25 +237,26 @@ Calcula el monto total de la venta teniendo en cuenta el precio de cada uno de l
 ~~~
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Mensaje”: “Venta modificada y finalizada”,
     “Monto total”:”240”
     }
-]
 ~~~
 
- - #### Delete/venta/borrar
-
+ - #### DELETE
+ ##### /venta/borrar
+ 
 Borra las ventas de la base de datos
 
 *Formato de respuesta*
 ~~~
-“Se borraron x venta/s”
+    {
+    "Mensaje": “Se borraron x venta/s”
+    }
 ~~~
 
- - #### Get/venta/buscar/:_id
+ - #### GET
+ ##### /venta/buscar/:_id
 
 Nos permite obtener una venta a través del id
 
@@ -283,14 +266,11 @@ Nos permite obtener una venta a través del id
 ~~~
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Id”:””,
     “Fecha”:”15/4/20”
     “Monto total”:”240”
     }
-]
 ~~~
 *Productos de la venta*
 ~~~
@@ -305,22 +285,21 @@ Json
 
 ## Compra
 
- - #### Post/compra/crear
+ - #### POST
+ ##### /compra/crear
 
 Se crea una nueva compra y se la ingresa a la base de datos
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Mensaje”: “Compra agregada a la base de datos”,
     “id”:” hfberiufuifbpiub43kth4blk34jb3iy3o4y5oi345go345gui”
     }
-]
 ~~~
 
- - #### Put/compra/insertar_producto/:_id
+ - #### PUT
+ ##### /compra/insertar_producto/:_id
 
 A la compra ya creada le ingresamos los productos que van a formar parte de esa compra
 
@@ -330,33 +309,30 @@ A la compra ya creada le ingresamos los productos que van a formar parte de esa 
 ~~~
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “id”:”4iuu35i34ub534h6bio634p63”,
     “cantidad”:”3”
     }
-]
 ~~~
 *Formato de respuesta*
 ~~~
-“Se ha agregado el objeto a la compra”
+    {
+    "Mensaje": “Se ha agregado el objeto a la compra”
+    }
 ~~~
 
-  - #### Get/compra/listar
+  - #### GET
+  ##### /compra/listar
 
 Devuelve un listado de todas las compras existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-Json 
-[
     {
     “Id”:””,
     “Fecha”:”15/4/20”
     “Monto total”:”240”
     }
-]
 ~~~
 *Productos de la compra*
 ~~~
@@ -369,7 +345,8 @@ Json
     }
 ~~~
 
- - #### Put/compra/sacarmonto/:_id
+ - #### PUT
+ ##### /compra/sacarmonto/:_id
 
 Calcula el monto total de la compra teniendo en cuenta el precio de cada uno de los productos que forman parte de la compra ya creada
 
@@ -379,25 +356,26 @@ Calcula el monto total de la compra teniendo en cuenta el precio de cada uno de 
 ~~~
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Mensaje”: “Compra modificada y finalizada”,
     “Monto total”:”240”
     }
-]
 ~~~
 
- - #### Delete/compra/borrar
+ - #### DELETE
+ ##### /compra/borrar
 
 Borra las compras de la base de datos
 
 *Formato de respuesta*
 ~~~
-“Se borraron x compra/s”
+    {
+    "Mensaje": “Se borraron x compra/s”
+    }
 ~~~
 
- - #### Get/venta/buscar/:_id
+ - #### GET
+ ##### /venta/buscar/:_id
 
 Nos permite obtener una compra a través del id
 
@@ -407,14 +385,11 @@ Nos permite obtener una compra a través del id
 ~~~
 *Formato de respuesta*
 ~~~
-Json 
-[
     {
     “Id”:””,
     “Fecha”:”15/4/20”
     “Monto total”:”240”
     }
-]
 ~~~
 *Productos de la compra*
 ~~~
@@ -429,44 +404,43 @@ Json
 
 ## Usuario
 
- - #### Post/usuario/crear
+ - #### POST
+ ##### /usuario/crear
 
 Nos permite crear un usuario con el cual vamos a poder utilizar las funciones del sistema
 
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “nombre”:” “,
     “Mail”:” “,
     “Clave”:” “
     }
-]
 ~~~
 *Formato de respuesta*
 ~~~
-“Mensaje”: “Usuario agregado a la base de datos”
+    {
+    “Mensaje”: “Usuario agregado a la base de datos”
+    }
 ~~~
 
- - #### Get/usuario/listar
+ - #### GET
+ ##### /usuario/listar
 
 Devuelve un listado de todos los usuarios existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-Json 
-[
     {
     “id”:””,
     “Nombre”: “ ”,
     “Mail”: “ “,
     “Clave”:” “
     }
-]
 ~~~
 
- - #### Delete/usuario/borrar/:_id
+ - #### DELETE
+ ##### /usuario/borrar/:_id
 
 Borramos el usuario a través del id
 
@@ -476,27 +450,28 @@ Borramos el usuario a través del id
 ~~~
 *Formato de respuesta*
 ~~~
-"Se borró correctamente el usuario"
+    {
+    "Mensaje": "Se borró correctamente el usuario"
+    }
 ~~~
 
- - #### Get /usuario/buscar
+ - #### GET
+ ##### /usuario/buscar
 
 Devuelve uno o más usuarios según la propiedad de producto utilizada para buscar
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “id”:””,
     “Nombre”: “”,
     “Mail”:””,
     “Clave”:” ”
     }
-]
 ~~~
 
- - #### Put /usuario/modificar/:_id
+ - #### PUT
+ ##### /usuario/modificar/:_id
 
 Se modifica una o más propiedades del usuario según se desee
 
@@ -506,52 +481,47 @@ Se modifica una o más propiedades del usuario según se desee
 ~~~
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “Nombre”: “”,
     “Mail”:””,
     “Clave”:””
     }
-]
 ~~~
 
 ## Remito
 
- - #### Post/remito/crear
+ - #### POST
+ ##### /remito/crear
 
 Permite crear un remito para cada compra realizada
 
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “Numero de remito”:” “,
     “Id proveedor”:“ “,
     “Id compra”:” “
     }
-]
 ~~~
 *Formato de respuesta*
 ~~~
-“Mensaje: Remito agregado a la base de datos”
+    {
+    “Mensaje": "Remito agregado a la base de datos”
+    }
 ~~~
 
- - #### Get/remito/listar
+ - #### GET
+ ##### /remito/listar
 
 Devuelve el listado de todos los remitos existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Id”:” “,
     “Fecha”:” “,
     “Numero de remito”:” “,
     }
-]
 ~~~
 *Productos de la compra:*
 ~~~
@@ -572,48 +542,52 @@ Json
 ~~~
 *Formato de respuesta*
 ~~~
-“Mensaje”: “Se modificó correctamente el usuario”
+    {
+    “Mensaje”: “Se modificó correctamente el usuario”
+    }
 ~~~
 
- - #### Delete/remito/borrar
+ - #### DELETE
+ ##### /remito/borrar
 
 Permite borrar los remitos de la base de datos
 
 *Formato de respuesta*
 ~~~
-“Mensaje”: Se borraron correctamente x remito/s”
+    {
+    “Mensaje”: "Se borraron correctamente x remito/s”
+    }
 ~~~
 
 ## Proveedor
 
- - #### Post/proveedor/crear
+ - #### POST
+ ##### /proveedor/crear
 
 Nos permite agregar un proveedor a la base de datos
 
 *Cuerpo de solicitud*
 ~~~
- Json
-[
     {
     “Razón social”:” “,
     “Cuil”:” “,
     “Número de teléfono”:” “
     }
- ]
  ~~~
  *Formato de respuesta*
  ~~~
- “Mensaje”: “Proveedor agregado a la base de datos”
+     {
+     “Mensaje”: “Proveedor agregado a la base de datos”
+     }
  ~~~
  
- - #### Get/proveedor/listar
+ - #### GET
+ ##### /proveedor/listar
 
 Devuelve un listado de todos los proveedores existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “id”:””,
     “Razón social”: “ ”,
@@ -621,10 +595,10 @@ Json
     “Número de teléfono”:” “,
     “Monto a favor”:” “
     }
-]
 ~~~
 
- - #### Delete/proveedor/borrar/:_id
+ - #### DELETE
+ ##### /proveedor/borrar/:_id
 
 Borramos el proveedor a través del id
 
@@ -634,18 +608,19 @@ Borramos el proveedor a través del id
 ~~~
 *Formato de respuesta*
 ~~~
- "Se borró correctamente el proveedor”
+    {
+    "Mensaje": "Se borró correctamente el proveedor”
+    }
 ~~~
 
 
- - #### Get/proveedor/buscar
+ - #### GET
+ ##### /proveedor/buscar
 
 Devuelve uno o más proveedores según la propiedad de producto utilizada para buscar
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “id”:””,
     “Razón social”: “”,
@@ -653,10 +628,10 @@ Json
     “Número de teléfono”:” ”,
     “Monto a favor”:” “
     }
-]
 ~~~
 
- - #### Put/proveedor/modificar/:_id
+ - #### PUT
+ ##### /proveedor/modificar/:_id
 
 Se modifica una o más propiedades del proveedor según se desee
 
@@ -666,52 +641,50 @@ Se modifica una o más propiedades del proveedor según se desee
 ~~~
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “Razón social”: “”,
     “Cuil”:””,
     “Número de teléfono”:” ”,
     “Monto a favor”:” “
     }
- ]
  ~~~
 *Formato de respuesta*
 ~~~
-“Mensaje”: “Se modificó correctamente el proveedor”
+    {
+    “Mensaje”: “Se modificó correctamente el proveedor”
+    }
 ~~~
 
 ## Factura de compra
 
- - #### Post/facturacompra/crear
+ - #### POST
+ ##### /facturacompra/crear
 
 Permite crear una factura de cada compra realizada
 
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “Numero de factura”:” “,
     “Id de compra”:” “,
     “Tipo de factura”:” “,
     “Tipo de IVA”:” “
     }
- ]
  ~~~
 *Formato de respuesta*
 ~~~
-“Mensaje”: “Factura agregada a la base de datos”
+    {
+    “Mensaje”: “Factura agregada a la base de datos”
+    }
 ~~~
 
- - #### Get/facturacompra/listar
+ - #### GET
+ ##### /facturacompra/listar
 
 Devuelve un listado de todas las facturas existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-Json
-[
     {
     “Id”:” “,
     “Fecha”:” “,
@@ -747,28 +720,29 @@ Json
       “Tipo de IVA”:” “,
       “Monto con IVA”
       }
-]
 ~~~
 
- - #### Delete/facturacompra/borrar
+ - #### DELETE
+ ##### /facturacompra/borrar
 
 Permite borrar las facturas existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-“Mensaje”: “Se borró correctamente x factura/s”
+    {
+    “Mensaje”: “Se borró correctamente x factura/s”
+    }
 ~~~
 
 ## Factura de venta
 
- - #### Post/facturaventa/crear
+ - #### POST
+ ##### /facturaventa/crear
 
 Permite crear una factura de cada venta realizada
 
 *Cuerpo de solicitud*
 ~~~
-Json
-[
     {
     “Numero de factura”:” “,
     “Id de compra”:” “,
@@ -776,21 +750,21 @@ Json
     “Tipo de IVA”:” “,
     “Cliente”:” “
     }
-]
 ~~~
 *Formato de respuesta*
 ~~~
-“Mensaje”: “Factura agregada a la base de datos”
+    {
+    “Mensaje”: “Factura agregada a la base de datos”
+    }
 ~~~
 
- - #### Get/facturaventa/listar
+ - #### GET
+ ##### /facturaventa/listar
 
 Devuelve un listado de todas las facturas existentes en la base de datos
 
 *Formato de respuesta *
 ~~~
-Json
-[
     {
     “Id”:” “,
     “Fecha”:” “,
@@ -819,15 +793,17 @@ Json
      “Tipo de IVA”:” “,
      “Monto con IVA”
      }
-]
 ~~~
 
 
- - #### Delete/facturaventa/borrar
+ - #### DELETE
+ ##### /facturaventa/borrar
 
 Permite borras las facturas existentes en la base de datos
 
 *Formato de respuesta*
 ~~~
-“Mensaje”: “Se borró correctamente x factura/s”
+    {
+    “Mensaje”: “Se borró correctamente x factura/s”
+    }
 ~~~
